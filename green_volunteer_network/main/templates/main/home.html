@@ -1,0 +1,15 @@
+<!-- main/templates/main/home.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Green Volunteer Network</title>
+</head>
+<body>
+    <h1>Volunteer Opportunities</h1>
+    <ul>
+        {% for opportunity in opportunities %}
+            <li>{{ opportunity.name }} - {{ opportunity.date }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
