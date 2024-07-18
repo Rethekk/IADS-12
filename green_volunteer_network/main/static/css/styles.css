@@ -1,0 +1,143 @@
+body {
+    background-color: #f8f9fa;
+    height: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
+.navbar {
+    margin-bottom: 20px;
+}
+.card {
+    border-radius: 0.5rem;
+}
+.btn-primary {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+.btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
+
+/* heaging h1*/
+h1 {
+    color: olivedrab;
+}
+
+/* profile image*/
+.rounded-circle {
+    border-radius: 50%; /* Makes the image circular */
+    width: 150px; /* Adjust width as needed */
+    height: 150px; /* Adjust height as needed */
+    object-fit: cover; /* Ensures the image fills the circle without stretching */
+    border: 2px solid #fff; /* Optional: Add a white border */
+}
+.border-section {
+    border: 2px solid #ccc; /* or any other color and width you prefer */
+    padding: 15px; /* Optional: Add some padding to make it look nicer */
+    border-radius: 5px; /* Optional: Add some border radius for rounded corners */
+}
+
+
+
+
+/* footer seciton*/
+.page-footer {
+    background-color: #bbd2e9;
+    padding: 20px 0;
+    margin-top: 30px;
+    flex: 1;
+}
+
+/*.page-footer .social-icons {*/
+/*    list-style: none;*/
+/*    padding: 0;*/
+/*}*/
+
+/*.page-footer .social-icons li {*/
+/*    display: inline;*/
+/*    margin-right: 10px;*/
+/*}*/
+
+/*.page-footer .social-icons li a {*/
+/*    color: #333;*/
+/*    text-decoration: none;*/
+/*    font-size: 24px;*/
+/*}*/
+
+.page-footer .sections-list,
+.page-footer .about-list {
+    list-style: none;
+    padding: 0;
+}
+
+.page-footer .sections-list li,
+.page-footer .about-list li {
+    margin-bottom: 10px;
+}
+
+.page-footer .sections-list li a,
+.page-footer .about-list li a {
+    color: #333;
+    text-decoration: none;
+}
+
+.page-footer .sections-list li a:hover,
+.page-footer .about-list li a:hover {
+    text-decoration: underline;
+}
+
+.page-footer p {
+    margin: 10px 0;
+}
+
+.page-footer a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.page-footer a:hover {
+    text-decoration: underline;
+}
+
+/* footer social media icon*/
+.social-icons {
+    list-style: none;
+    padding: 0;
+}
+
+.social-icons li {
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.social-icons a {
+    text-decoration: none;
+    #color: #000; /* Change this color to suit your design */
+    font-size: 24px;
+    transition: color 0.3s;
+}
+.social-icons li a i.fa-facebook-f {
+    color: #0f65c0; /* Initial color for Facebook */
+}
+
+.social-icons li a i.fa-linkedin-in {
+    color: #0c14db; /* Initial color for LinkedIn */
+}
+
+.social-icons li a i.fa-instagram {
+    color: #ad26c6; /* Initial color for Instagram */
+}
+
+.social-icons li a i.fa-pinterest-p {
+    color: red; /* Initial color for Pinterest */
+}
+
+.social-icons a:hover {
+    color: #007bff; /* Change this color to suit your design */
+}
+.social-icons li a i:hover {
+    color: #007bff; /* Color change on hover for all icons */
+}
+
