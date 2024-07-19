@@ -1,6 +1,7 @@
 from datetime import timezone
 
 from django.contrib.auth import logout, login, authenticate
+from django.contrib.auth.forms import AuthenticationForm
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -66,9 +67,12 @@ def profile(request):
     else:
         p_form = ProfileUpdateForm(instance=user_profile)
 
+    participated_opportunities = request.user.participated_opportunities.all()
+
     context = {
         'user_profile': user_profile,
         'p_form': p_form,
+        'participated_opportunities': participated_opportunities,
     }
 
     return render(request, 'main/profile.html', context)
@@ -99,3 +103,17 @@ def user_login(request):
 def user_logout(request):
     logout(request)
     return HttpResponseRedirect(reverse('home'))
+
+def opportunity_detail(request, pk):
+    opportunity = get_object_or_404(VolunteerOpportunity, pk=pk)
+    return render(request, 'main/opportunity_detail.html', {'opportunity': opportunity})
+
+
+def participate(request, pk):
+    opportunity = get_object_or_404(VolunteerOpportunity, pk=pk)
+    if request.user not in opportunity.participants.all():
+        opportunity.participants.add(request.user)
+        messages.success(request, f'You have successfully registered for {opportunity.title}')
+    else:
+        messages.info(request, f'You are already registered for {opportunity.title}')
+    return redirect('profile')

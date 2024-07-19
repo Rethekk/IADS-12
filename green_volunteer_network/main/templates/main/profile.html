@@ -1,19 +1,5 @@
-{#{% extends 'main/base.html' %}#}
-{#{% block content %}#}
-{#<div class="container">#}
-{#    <h1>Profile</h1>#}
-{#    <p><strong>Username:</strong> {{ user.username }}</p>#}
-{#    <p><strong>Email:</strong> {{ user.email }}</p>#}
-{#    <h2>Your Volunteer Opportunities</h2>#}
-{#    <!-- Add logic to display user's opportunities -->#}
-{#</div>#}
-{#{% endblock %}#}
-{##}
-{##}
-
-
 {% extends 'main/base.html' %}
-{% load static %}  <!-- Load static files module -->
+{% load static %}
 
 {% block content %}
 <div class="container">
@@ -28,7 +14,7 @@
             {% else %}
                 <img src="{% get_media_prefix %}defaultAvatar.png" alt="Default Avatar" class="rounded-circle" style="width: 200px; height: 200px;">
             {% endif %}
-        <!-- Edit profile photo form -->
+            <!-- Edit profile photo form -->
             <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 {{ p_form.profile_photo}}
@@ -41,7 +27,6 @@
             <h2>User Details</h2>
             <p><strong>Username:</strong> {{ user.username }}</p>
             <p><strong>Email:</strong> {{ user.email }}</p>
-
         </div>
     </div>
 
@@ -49,12 +34,14 @@
     <div class="row mt-5">
         <div class="col-md-12">
             <h2>Your Volunteer Opportunities</h2>
-            {% if volunteer_opportunities %}
-                {% for opportunity in volunteer_opportunities %}
+            {% if participated_opportunities %}
+                {% for opportunity in participated_opportunities %}
                     <div>
                         <h3>{{ opportunity.title }}</h3>
                         <p>{{ opportunity.description }}</p>
-                        <!-- Add more details as needed -->
+                        <p><strong>Organization:</strong> {{ opportunity.organization }}</p>
+                        <p><strong>Location:</strong> {{ opportunity.location }}</p>
+                        <p><strong>Date:</strong> {{ opportunity.date }}</p>
                     </div>
                     <hr>
                 {% endfor %}

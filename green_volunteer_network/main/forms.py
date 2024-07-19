@@ -20,6 +20,12 @@ class UserRegisterForm(UserCreationForm):
         model = User
         fields = ['username', 'email', 'password1', 'password2']
 
+    def clean_username(self):
+        username = self.cleaned_data.get('username')
+        if User.objects.filter(username=username).exists():
+            raise forms.ValidationError("This username is already taken. Please choose another.")
+        return username
+
 class ProfileUpdateForm(forms.ModelForm):
     class Meta:
         model = Profile

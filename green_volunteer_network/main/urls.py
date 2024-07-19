@@ -13,11 +13,11 @@ urlpatterns = [
     path('accounts/logout/', views.user_logout, name='logout'),
     path('accounts/profile/', views.profile, name='profile'),
     path('opportunity/<int:pk>/participate/', views.participate, name='participate'),
-    path('about-us/', views.about_us, name='about_us'),
-    path('termsOfService/', views.terms_of_service, name='terms_of_service'),
-    path('volunteerCriteria/', views.volunteerCriteria, name='volunteerCriteria'),
-    path('contact_us/', views.contact_us, name='contact_us'),
-    path('careers/', views.careers, name='careers'),
+    # path('about-us/', views.about_us, name='about_us'),
+    # path('termsOfService/', views.terms_of_service, name='terms_of_service'),
+    # path('volunteerCriteria/', views.volunteerCriteria, name='volunteerCriteria'),
+    # path('contact_us/', views.contact_us, name='contact_us'),
+    # path('careers/', views.careers, name='careers'),
     path('search_suggestions/', views.search_suggestions, name='search_suggestions'),
 
     # password rest
