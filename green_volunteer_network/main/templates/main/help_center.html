@@ -1,0 +1,104 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% block title %}
+Help Centre - Green Volunteer Network
+{% endblock %}
+
+{% block content %}
+<div class="help-centre-container">
+    <h1>Help Centre</h1>
+
+    <div class="search-container">
+        <form action="{% url 'search_help' %}" method="get">
+            <input type="text" name="q" placeholder="Search for help topics..." required>
+            <button type="submit" class="search-btn">Search</button>
+        </form>
+    </div>
+
+    <div class="help-content">
+        <p>Welcome to the Help Centre of Green Volunteer Network! We're here to assist you with any questions or issues you may have. Whether you're a new volunteer, a community partner, or just someone looking to get involved, our Help Centre is designed to provide you with the information you need to get the most out of our platform.</p>
+        
+        <h3>Frequently Asked Questions</h3>
+        <ul>
+            <li><a href="#registration">How do I register as a volunteer?</a></li>
+            <li><a href="#opportunities">How can I find volunteer opportunities?</a></li>
+            <li><a href="#account">How do I update my account information?</a></li>
+            <li><a href="#contact">How can I contact support?</a></li>
+        </ul>
+        
+        <h3 id="registration">How do I register as a volunteer?</h3>
+        <p>To register as a volunteer, simply go to our <a href="{% url 'register' %}">registration page</a> and fill out the form with your details. Once registered, you can browse and apply for various volunteer opportunities.</p>
+        
+        <h3 id="opportunities">How can I find volunteer opportunities?</h3>
+        <p>You can find volunteer opportunities by visiting the <a href="{% url 'opportunity_list' %}">opportunities page</a> on our website. Use the search and filter options to find projects that match your interests and location.</p>
+        
+        <h3 id="account">How do I update my account information?</h3>
+        <p>To update your account information, log in to your account and go to the <a href="{% url 'profile' %}">profile settings</a> page. Here you can update your personal details, contact information, and more.</p>
+        
+        <h3 id="contact">How can I contact support?</h3>
+        <p>If you need further assistance, you can contact our support team at <a href="mailto:support@greenvolunteernetwork.com">support@greenvolunteernetwork.com</a>. We're here to help!</p>
+    </div>
+</div>
+{% endblock %}
+
+<style>
+    .help-centre-container {
+        max-width: 900px;
+        margin: 50px auto;
+        padding: 20px;
+        background: #f9f9f9;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .help-centre-container h1, .help-centre-container h2, .help-centre-container h3 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    .help-centre-container p {
+        line-height: 1.6;
+        margin-bottom: 20px;
+    }
+    .help-centre-container ul {
+        list-style-type: none;
+        padding: 0;
+    }
+    .help-centre-container ul li {
+        margin: 10px 0;
+    }
+    .help-centre-container ul li a {
+        color: #28a745;
+        text-decoration: none;
+        font-weight: bold;
+    }
+    .help-centre-container ul li a:hover {
+        text-decoration: underline;
+    }
+    .search-container {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    .search-container form {
+        display: inline-flex;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        overflow: hidden;
+    }
+    .search-container input[type="text"] {
+        border: none;
+        padding: 10px;
+        width: 300px;
+        font-size: 16px;
+    }
+    .search-container button.search-btn {
+        background: #28a745;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        cursor: pointer;
+        font-size: 16px;
+        border-radius: 0 5px 5px 0;
+    }
+    .search-container button.search-btn:hover {
+        background: #218838;
+    }
+</style>

@@ -11,7 +11,7 @@ from .models import VolunteerOpportunity
 from .forms import UserRegisterForm
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.urls import reverse
-from .forms import ProfileUpdateForm
+from .forms import ProfileUpdateForm,ContactForm
 from .models import Profile
 
 def home(request):
@@ -108,7 +108,6 @@ def opportunity_detail(request, pk):
     opportunity = get_object_or_404(VolunteerOpportunity, pk=pk)
     return render(request, 'main/opportunity_detail.html', {'opportunity': opportunity})
 
-
 def participate(request, pk):
     opportunity = get_object_or_404(VolunteerOpportunity, pk=pk)
     if request.user not in opportunity.participants.all():
@@ -117,3 +116,26 @@ def participate(request, pk):
     else:
         messages.info(request, f'You are already registered for {opportunity.title}')
     return redirect('profile')
+
+def about_us(request):
+    return render(request, 'main/aboutUs.html')
+
+def terms_of_service(request):
+    return render(request, 'main/termsOfService.html')
+
+def volunteerCriteria(request):
+    return render(request, 'main/volunteerCriteria.html')
+
+def careers(request):
+    return render(request, 'main/careers.html')
+
+def contact_us(request):
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Your message has been sent successfully!')
+            return redirect('contact_us')
+    else:
+        form = ContactForm()
+    return render(request, 'main/contact_us.html', {'form': form})

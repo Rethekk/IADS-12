@@ -3,9 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Green Volunteer Network</title>
+    <title>{% block title %}Green Volunteer Network{% endblock %}</title>
     {% load static %}
+    <!-- Bootstrap CSS -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+
+
+
+    <!-- Custom CSS (if needed) -->
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body>
@@ -49,6 +57,57 @@
         {% block content %}
         {% endblock %}
     </div>
+     <!-- Footer Section -->
+    <footer class="page-footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <img src="{% get_media_prefix %}Logo_GVW.png">
+                    <h3>Follow Us</h3>
+                    <ul class="social-icons">
+                        <li><a href="https://www.facebook.com/login.php" target="_blank"><i class="fab fa-facebook-f" ></i></a></li>
+                        <li><a href="https://www.linkedin.com/" target="_blank"><i class="fab fa-linkedin-in" ></i></a></li>
+                        <li><a href="https://www.instagram.com/accounts/login/" target="_blank"><i class="fab fa-instagram"  ></i></a></li>
+                        <li><a href="https://www.pinterest.com/login/" target="_blank"><i class="fab fa-pinterest-p"  ></i></a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+{#                    <div class="help-centre-container">#}
+                    <h3>Have a Question?</h3>
+                    <p>We Have an Answer.</p>
+                    <ul class="sections-list">
+                        <li><a href="tel:+1234567890">Call Us: +1 (234) 567-890</a></li>
+                    </ul>
+{#                    <h3>Sections</h3>#}
+{#                    <ul class="sections-list">#}
+{#                        <li><a href="#">Environment</a></li>#}
+{#                        <li><a href="#">Business & Policy</a></li>#}
+{#                        <li><a href="#">Home & Garden</a></li>#}
+{#                        <li><a href="#">News</a></li>#}
+{#                    </ul>#}
+                </div>
+                <div class="col-md-4">
+                    <h3>Company</h3>
+                    <ul class="about-list">
+                        <li><a href="{% url 'about_us' %}">About Us</a></li>
+                        <li><a href="{% url 'volunteerCriteria' %}">Volunteer Engagement Criteria</a></li>
+                        <li><a href="{% url 'careers' %}">Careers</a></li>
+                        <li><a href="{% url 'contact_us' %}">Contact Us</a></li>
+                        <li><a href="{% url 'terms_of_service' %}">Terms of Service</a></li>
+
+                    </ul>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <p><b>Green Volunteer Network </b>connect volunteers with environmental initiatives and organizations</p>
+                    <p>Copyright © 2024 Green Volunteer Network. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS and dependencies -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

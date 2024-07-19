@@ -1,0 +1,74 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% block title %}
+Contact Us - Green Volunteer Network
+{% endblock %}
+
+{% block content %}
+
+<div class="contact-form-container">
+    <h1>Contact Us</h1>
+    <div class="contact-info">
+        <p>Thank you for your interest in Green Volunteer Network! We are here to help you connect with environmental initiatives and organizations across Canada. Whether you have a question about our platform, need assistance with your volunteer opportunities, or just want to share your feedback, we would love to hear from you.</p>
+        <img src="{% get_media_prefix %}ContactUsLogo.png" alt="Green Volunteer Network">
+    </div>
+    {% if messages %}
+        {% for message in messages %}
+            <div class="message-success">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn-submit">Send Message</button>
+    </form>
+</div>
+{% endblock %}
+
+<style>
+    .contact-form-container {
+        max-width: 800px;
+        margin: 50px auto;
+        padding: 20px;
+        background: #f9f9f9;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .contact-form-container h1 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    .form-control {
+        margin-bottom: 10px;
+    }
+    .btn-submit {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        background: #28a745;
+        border: none;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+        border-radius: 4px;
+    }
+    .btn-submit:hover {
+        background: #218838;
+    }
+    .message-success {
+        text-align: center;
+        color: green;
+        margin-bottom: 20px;
+    }
+    .contact-info {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    .contact-info img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+</style>
+

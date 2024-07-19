@@ -1,0 +1,68 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% block title %}
+    Volunteer Engagement Criteria - Green Volunteer Network
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <h1>Volunteer Engagement Criteria</h1>
+
+    <p>Our volunteer engagement criteria ensure that volunteers and organizations derive maximum benefit from their collaboration in environmental conservation and sustainability projects.</p>
+
+    <h2>1. Commitment to Sustainability</h2>
+    <p>Volunteers should demonstrate a strong commitment to environmental conservation and sustainability initiatives.</p>
+
+    <h2>2. Skills and Expertise</h2>
+    <p>We seek volunteers with skills relevant to environmental projects, such as:</p>
+    <ul>
+        <li>Gardening and landscaping</li>
+        <li>Event planning and coordination</li>
+        <li>Research and data analysis</li>
+    </ul>
+
+    <h2>3. Availability and Reliability</h2>
+    <p>Volunteers should be available to commit to designated shifts or project timelines. Reliable communication is essential.</p>
+
+    <h2>4. Passion for Community Engagement</h2>
+    <p>We value volunteers who are enthusiastic about engaging with local communities to promote environmental awareness.</p>
+
+    <h2>5. Adaptability and Initiative</h2>
+    <p>Volunteers should demonstrate adaptability to changing project requirements and show initiative in proposing solutions to sustainability challenges.</p>
+
+    <h2>6. Safety and Respect</h2>
+    <p>Ensure safety during volunteer activities and maintain respectful behavior towards fellow volunteers and community members.</p>
+
+    <!-- Include images for attractiveness -->
+    <div class="row mt-5">
+        <div class="image-container">
+            <img class="mySlides" src="{% get_media_prefix %}volunteerGuidelines/guideline1.jpeg" alt="Image 1">
+            <img class="mySlides" src="{% get_media_prefix %}volunteerGuidelines/guideline2.jpeg" alt="Image 2">
+            <img  class="mySlides" src="{% get_media_prefix %}volunteerGuidelines/guideline3.jpeg" alt="Image 3">
+
+        </div>
+    </div>
+
+
+</div>
+<script>
+var myIndex = 0;
+carousel();
+
+function carousel() {
+  var i;
+  var x = document.getElementsByClassName("mySlides");
+  for (i = 0; i < x.length; i++) {
+    x[i].style.display = "none";
+  }
+  myIndex++;
+  if (myIndex > x.length) {myIndex = 1}
+  x[myIndex-1].style.display = "block";
+  setTimeout(carousel, 2000); // Change image every 2 seconds
+}
+</script>
+<style>
+.mySlides {display:none;}
+</style>
+{% endblock %}

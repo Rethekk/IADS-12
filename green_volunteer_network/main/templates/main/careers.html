@@ -1,0 +1,132 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% block title %}
+Careers - Green Volunteer Network
+{% endblock %}
+
+
+{% block content %}
+<style>
+    .careers-container {
+        max-width: 900px;
+        margin: 50px auto;
+        padding: 20px;
+        background: #f9f9f9;
+        border-radius: 12px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .careers-container h1, .careers-container h2 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    .careers-container .intro {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    .careers-container .intro img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+        margin-top: 20px;
+    }
+    .job-listings {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 40px;
+        border: 2px solid #28a745;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .job-listings thead th {
+        background: #28a745;
+        color: white;
+        padding: 15px;
+        text-align: left;
+        border-bottom: 2px solid #1e7e34;
+        border-right: 1px solid #fff;
+    }
+    .job-listings tbody td {
+        padding: 15px;
+        border-bottom: 1px solid #ddd;
+        border-right: 1px solid #ddd;
+    }
+    .job-listings tbody tr:last-child td {
+        border-bottom: none;
+    }
+    .job-listings tbody tr:nth-child(even) {
+        background: #f9f9f9;
+    }
+    .apply-btn {
+        display: block;
+        padding: 10px 20px;
+        background: #28a745;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        text-align: center;
+    }
+    .apply-btn:hover {
+        background: #218838;
+    }
+    .benefits {
+        margin-bottom: 40px;
+    }
+    .benefits ul {
+        list-style-type: disc;
+        padding-left: 20px;
+    }
+</style>
+<div class="careers-container">
+    <h1>Join Our Team</h1>
+    <div class="intro">
+        <p>At Green Volunteer Network, we are dedicated to connecting volunteers with environmental initiatives and organizations across Canada. Our mission is to promote sustainability and environmental conservation through active volunteerism. We are always looking for passionate and talented individuals to join our team and help us make a difference.</p>
+        <img src="{% get_media_prefix %}JoinOurTeam_banner.png" alt="Join Our Team" style="width: 100%">
+    </div>
+
+    <h2><b>Current Openings</b></h2>
+    <table class="job-listings">
+        <thead>
+            <tr>
+                <th>Position</th>
+                <th>Description</th>
+                <th>Apply</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="job-listing">
+                <td>Volunteer Coordinator</td>
+                <td>As a Volunteer Coordinator, you will be responsible for recruiting, training, and managing volunteers for various environmental projects. Your role will be crucial in ensuring that volunteers are effectively engaged and supported throughout their involvement with our network.</td>
+                <td><button class="apply-btn">Apply Now</button></td>
+            </tr>
+            <tr class="job-listing">
+                <td>Community Outreach Specialist</td>
+                <td>Our Community Outreach Specialist will work closely with local organizations and communities to promote our volunteer opportunities and build strong partnerships. This role requires excellent communication and networking skills.</td>
+                <td><button class="apply-btn">Apply Now</button></td>
+            </tr>
+            <tr class="job-listing">
+                <td>Marketing and Communications Manager</td>
+                <td>We are looking for a Marketing and Communications Manager to develop and implement strategies that will increase our visibility and engagement with the public. This role involves managing our social media presence, creating marketing materials, and coordinating public relations efforts.</td>
+                <td><button class="apply-btn">Apply Now</button></td>
+            </tr>
+            <!-- Add more job listings as needed -->
+        </tbody>
+    </table>
+
+    <h2><b>Why Work With Us?</b></h2>
+    <div class="benefits">
+        <ul>
+            <li>Opportunity to make a positive impact on the environment.</li>
+            <li>Collaborative and inclusive work environment.</li>
+            <li>Professional development and growth opportunities.</li>
+            <li>Competitive salary and benefits package.</li>
+        </ul>
+    </div>
+
+    <h2><b>How to Apply</b></h2>
+    <p>If you are passionate about environmental conservation and want to be part of a dynamic team, we would love to hear from you. Please send your resume and a cover letter to <a href="mailto:careers@greenvolunteernetwork.com">careers@greenvolunteernetwork.com</a> with the job title in the subject line.</p>
+</div>
+{% endblock %}
+
+
