@@ -8,13 +8,33 @@ from django.views.decorators.csrf import csrf_protect
 
 from .models import VolunteerOpportunity
 from .forms import UserRegisterForm
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.urls import reverse
 from .forms import ProfileUpdateForm
 from .models import Profile
 
 def home(request):
+    query = request.GET.get('q', '')
     opportunities = VolunteerOpportunity.objects.all()
+    if query:
+        # Split the query into individual words
+        query_words = query.split()
+        from django.db.models import Q
+        filter_query = Q()
+        for word in query_words:
+            filter_query |= Q(title__icontains=word) | Q(description__icontains=word)
+        opportunities = VolunteerOpportunity.objects.filter(filter_query)
+
+    return render(request, 'main/home.html', {'opportunities': opportunities})
+
+def search_suggestions(request):
+    query = request.GET.get('q', '')
+    suggestions = list(VolunteerOpportunity.objects.filter(title__icontains=query).values_list('title', flat=True)[:10])
+    return JsonResponse({'suggestions': suggestions})
+
+def search_view(request):
+    query = request.GET.get('q', '')
+    opportunities = VolunteerOpportunity.objects.filter(title__icontains=query) | VolunteerOpportunity.objects.filter(description__icontains=query)
     return render(request, 'main/home.html', {'opportunities': opportunities})
 
 def register(request):
