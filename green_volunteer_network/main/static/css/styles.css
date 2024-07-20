@@ -39,7 +39,10 @@ h1 {
     border-radius: 5px; /* Optional: Add some border radius for rounded corners */
 }
 
-
+.bg-cover {
+    background-size: cover;
+    background-position: center;
+}
 
 
 /* footer seciton*/
@@ -141,3 +144,36 @@ h1 {
     color: #007bff; /* Color change on hover for all icons */
 }
 
+.jumbotron {
+    position: relative;
+    padding: 0;
+    margin-bottom: 2rem;
+    border-radius: 0.3rem;
+}
+
+.jumbotron .overlay {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+
+.card {
+    border: none;
+}
+
+.card-title {
+    margin-bottom: 1rem;
+}
+
+.card-text {
+    margin-bottom: 1rem;
+}
+
+.btn-lg {
+    padding: 0.75rem 1.25rem;
+    font-size: 1.25rem;
+    line-height: 1.5;
+    border-radius: 0.3rem;
+}

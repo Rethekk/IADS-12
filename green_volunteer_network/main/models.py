@@ -14,12 +14,13 @@ class Organization(models.Model):
         return self.name
 
 class VolunteerOpportunity(models.Model):
-    organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
-    title = models.CharField(max_length=255)
+    title = models.CharField(max_length=200)
     description = models.TextField()
-    location = models.CharField(max_length=255)
-    date = models.DateField()
-    required_skills = models.TextField()
+    date = models.DateTimeField()
+    location = models.CharField(max_length=200)
+    additional_info = models.TextField(blank=True, null=True)
+    image = models.ImageField(upload_to='opportunity_images/', blank=True, null=True)
+    organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
     participants = models.ManyToManyField(User, related_name='participated_opportunities')
 
     def __str__(self):
@@ -61,3 +62,16 @@ class Contact(models.Model):
 
     def __str__(self):
         return self.name
+
+class Topic(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+class Quote(models.Model):
+    text = models.TextField()
+    author = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.author
