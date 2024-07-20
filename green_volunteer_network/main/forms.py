@@ -26,6 +26,10 @@ class UserRegisterForm(UserCreationForm):
             raise forms.ValidationError("This username is already taken. Please choose another.")
         return username
 
+class UserUpdateForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['username', 'email']
 class ProfileUpdateForm(forms.ModelForm):
     class Meta:
         model = Profile
