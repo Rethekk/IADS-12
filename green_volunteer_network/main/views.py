@@ -78,6 +78,23 @@ def profile(request):
 
     return render(request, 'main/profile.html', context)
 
+# def user_login(request):
+#     if request.method == 'POST':
+#         username = request.POST['username']
+#         password = request.POST['password']
+#         user = authenticate(username=username, password=password)
+#         if user:
+#             if user.is_active:
+#                 login(request, user)
+#                 request.session['last_login'] = str(timezone.now())
+#                 request.session.set_expiry(60)
+#                 return HttpResponseRedirect(reverse('home'))
+#             else:
+#                 return HttpResponse('Your account is disabled.')
+#         else:
+#             return HttpResponse('Invalid login details.')
+#     else:
+#         return render(request, 'registration/login.html')
 def user_login(request):
     if request.method == 'POST':
         form = AuthenticationForm(request, data=request.POST)
