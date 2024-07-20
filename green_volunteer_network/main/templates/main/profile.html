@@ -14,19 +14,52 @@
             {% else %}
                 <img src="{% get_media_prefix %}defaultAvatar.png" alt="Default Avatar" class="rounded-circle" style="width: 200px; height: 200px;">
             {% endif %}
-            <!-- Edit profile photo form -->
-            <form method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-                {{ p_form.profile_photo}}
-                <button type="submit" class="btn btn-primary">Update Profile Photo</button>
-            </form>
         </div>
 
         <!-- User details section -->
         <div class="col-md-8">
             <h2><u>User Details</u></h2>
-            <p><strong>Username:</strong> {{ user.username }}</p>
-            <p><strong>Email:</strong> {{ user.email }}</p>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <label for="{{ u_form.username.id_for_label }}" class="form-label">Username</label>
+                    <input type="text" id="{{ u_form.username.id_for_label }}" name="{{ u_form.username.name }}" value="{{ u_form.username.value }}" class="form-control">
+                    {% if u_form.username.errors %}
+                        <div class="text-danger">
+                            {% for error in u_form.username.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ u_form.email.id_for_label }}" class="form-label">Email</label>
+                    <input type="email" id="{{ u_form.email.id_for_label }}" name="{{ u_form.email.name }}" value="{{ u_form.email.value }}" class="form-control">
+                    {% if u_form.email.errors %}
+                        <div class="text-danger">
+                            {% for error in u_form.email.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ p_form.profile_photo.id_for_label }}" class="form-label">Profile Photo</label>
+                    <input type="file" id="{{ p_form.profile_photo.id_for_label }}" name="{{ p_form.profile_photo.name }}" class="form-control">
+                    {% if p_form.profile_photo.errors %}
+                        <div class="text-danger">
+                            {% for error in p_form.profile_photo.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <button type="submit" class="btn btn-primary">Update Profile</button>
+            </form>
         </div>
     </div>
 

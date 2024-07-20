@@ -1,17 +1,15 @@
 from datetime import timezone
-
 from django.contrib.auth import logout, login, authenticate
 from django.contrib.auth.forms import AuthenticationForm
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_protect
-
 from .models import VolunteerOpportunity
 from .forms import UserRegisterForm
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.urls import reverse
-from .forms import ProfileUpdateForm,ContactForm
+from .forms import ProfileUpdateForm,ContactForm, UserUpdateForm
 from .models import Profile
 
 def home(request):
@@ -57,22 +55,25 @@ def profile(request):
     user_profile, created = Profile.objects.get_or_create(user=request.user)
 
     if request.method == 'POST':
+        u_form = UserUpdateForm(request.POST, instance=request.user)
         p_form = ProfileUpdateForm(request.POST, request.FILES, instance=user_profile)
-        if p_form.is_valid():
-            print("Form is valid. Saving the profile photo.")
+
+        if u_form.is_valid() and p_form.is_valid():
+            u_form.save()
             p_form.save()
+            messages.success(request, 'Your profile has been updated successfully.')
             return redirect('profile')  # Redirect to the same view after successful update
-        else:
-            print("Form is invalid.")
     else:
+        u_form = UserUpdateForm(instance=request.user)
         p_form = ProfileUpdateForm(instance=user_profile)
 
     participated_opportunities = request.user.participated_opportunities.all()
 
     context = {
-        'user_profile': user_profile,
+        'u_form': u_form,
         'p_form': p_form,
         'participated_opportunities': participated_opportunities,
+        'user_profile': user_profile,
     }
 
     return render(request, 'main/profile.html', context)
