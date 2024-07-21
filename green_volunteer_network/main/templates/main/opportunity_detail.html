@@ -29,7 +29,7 @@
                 </form>
             {% endif %}
         {% else %}
-            <button class="btn btn-secondary btn-lg" disabled="disabled">Log In To Participate</button>
+             <a href="{% url 'login' %}" class="btn btn-secondary btn-lg btn-green">Log In To Participate</a>
         {% endif %}
     </div>
 
