@@ -1,0 +1,41 @@
+{% extends 'main/base.html' %}
+{% block title %}Organization Dashboard{% endblock %}
+{% block content %}
+<div class="container">
+    <h1>Welcome, {{ request.user.organization.name }}</h1>
+    <p>Here you can manage your organization's profile and events.</p>
+
+    <div class="my-4">
+        <h2>Manage Events</h2>
+        <a href="{% url 'create_event' %}" class="btn btn-primary">Create New Event</a>
+        {% if request.user.organization.volunteeropportunity_set.all %}
+        <table class="table mt-3">
+            <thead>
+                <tr>
+                    <th scope="col">Event Name</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Participants</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for event in request.user.organization.volunteeropportunity_set.all %}
+                <tr>
+                    <td>{{ event.title }}</td>
+                    <td>{{ event.date|date:"Y-m-d" }}</td>
+                    <td>{{ event.participants.count }}</td>
+                    <td>
+                        <a href="{% url 'event_participants' event.id %}" class="btn btn-info">See Participants</a>
+                        <a href="{% url 'edit_event' event.pk %}" class="btn btn-sm btn-outline-secondary">Edit</a>
+                        <a href="{% url 'delete_event' event.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p class="text-muted mt-3">No events found. Start by creating a new event.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -5,6 +5,7 @@ from django.db import models
 from django.contrib.auth.models import User
 
 class Organization(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='organization')
     name = models.CharField(max_length=255)
     description = models.TextField()
     website = models.URLField(max_length=200)
@@ -14,10 +15,26 @@ class Organization(models.Model):
         return self.name
 
 class VolunteerOpportunity(models.Model):
+    PROVINCE_CHOICES = (
+        ('AB', 'Alberta'),
+        ('BC', 'British Columbia'),
+        ('MB', 'Manitoba'),
+        ('NB', 'New Brunswick'),
+        ('NL', 'Newfoundland and Labrador'),
+        ('NS', 'Nova Scotia'),
+        ('ON', 'Ontario'),
+        ('PE', 'Prince Edward Island'),
+        ('QC', 'Quebec'),
+        ('SK', 'Saskatchewan'),
+        ('NT', 'Northwest Territories'),
+        ('NU', 'Nunavut'),
+        ('YT', 'Yukon'),
+    )
     title = models.CharField(max_length=200)
     description = models.TextField()
     date = models.DateTimeField()
     location = models.CharField(max_length=200)
+    province = models.CharField(max_length=2, choices=PROVINCE_CHOICES, default='ON')
     additional_info = models.TextField(blank=True, null=True)
     image = models.ImageField(upload_to='opportunity_images/', blank=True, null=True)
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
@@ -49,6 +66,7 @@ class Registration(models.Model):
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     profile_photo = models.ImageField(upload_to='profile_photos/', blank=True, null=True)
+    is_organization = models.BooleanField(default=False)
 
     def __str__(self):
         return self.user.username

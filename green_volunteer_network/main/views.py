@@ -6,25 +6,42 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_protect
 from .models import VolunteerOpportunity
-from .forms import UserRegisterForm
+from .forms import UserRegisterForm, OrganizationRegistrationForm, OrganizationLoginForm
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from .forms import ProfileUpdateForm,ContactForm, UserUpdateForm
 from .models import Profile
+from .forms import CreateEventForm
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django import forms
+import datetime
 
 def home(request):
+
+    #Session Counting
+    today = datetime.date.today()
+    if 'has_visited' not in request.session:
+        total_visits = request.session.get('total_visits', 0) + 1
+        request.session['total_visits'] = total_visits
+        request.session['has_visited'] = True
+        request.session.set_expiry(0)
+
+    #Search
     query = request.GET.get('q', '')
+    province = request.GET.get('province', '')
     opportunities = VolunteerOpportunity.objects.all()
     if query:
-        # Split the query into individual words
-        query_words = query.split()
-        from django.db.models import Q
-        filter_query = Q()
-        for word in query_words:
-            filter_query |= Q(title__icontains=word) | Q(description__icontains=word)
-        opportunities = VolunteerOpportunity.objects.filter(filter_query)
+        opportunities = opportunities.filter(title__icontains=query)
+    if province:
+        opportunities = opportunities.filter(province=province)
 
-    return render(request, 'main/home.html', {'opportunities': opportunities})
+    total_visits = request.session.get('total_visits', 0)
+
+    return render(request, 'main/home.html', {
+        'opportunities': opportunities,
+        'PROVINCE_CHOICES': VolunteerOpportunity.PROVINCE_CHOICES,
+        'total_visits': total_visits
+    })
 
 def search_suggestions(request):
     query = request.GET.get('q', '')
@@ -122,9 +139,23 @@ def user_logout(request):
     logout(request)
     return HttpResponseRedirect(reverse('home'))
 
+
 def opportunity_detail(request, pk):
     opportunity = get_object_or_404(VolunteerOpportunity, pk=pk)
-    return render(request, 'main/opportunity_detail.html', {'opportunity': opportunity})
+    already_participating = request.user in opportunity.participants.all()
+
+    if request.method == "POST" and request.user.is_authenticated:
+        if not already_participating:
+            opportunity.participants.add(request.user)
+            # Instead of redirect, we use JsonResponse to notify the client-side
+            return JsonResponse({'status': 'success', 'message': 'You have successfully registered!'})
+        else:
+            return JsonResponse({'status': 'already_registered', 'message': 'You are already registered!'})
+
+    return render(request, 'main/opportunity_detail.html', {
+        'opportunity': opportunity,
+        'already_participating': already_participating
+    })
 
 def participate(request, pk):
     opportunity = get_object_or_404(VolunteerOpportunity, pk=pk)
@@ -132,8 +163,8 @@ def participate(request, pk):
         opportunity.participants.add(request.user)
         messages.success(request, f'You have successfully registered for {opportunity.title}')
     else:
-        messages.info(request, f'You are already registered for {opportunity.title}')
-    return redirect('profile')
+        messages.info(request, 'You are already registered for this event.')
+    return redirect('opportunity_detail', pk=pk)
 
 def about_us(request):
     return render(request, 'main/aboutUs.html')
@@ -157,3 +188,85 @@ def contact_us(request):
     else:
         form = ContactForm()
     return render(request, 'main/contact_us.html', {'form': form})
+
+
+def register_organization(request):
+    if request.method == 'POST':
+        form = OrganizationRegistrationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            # Assuming you want to log in the user right after registration
+            login(request, user)
+            messages.success(request, 'Registration successful. Welcome to Green Volunteer Network!')
+            return redirect('organization_dashboard')  # Redirect to a dashboard or another appropriate page
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{field}: {error}")
+    else:
+        form = OrganizationRegistrationForm()
+        return render(request, 'registration/register_organization.html', {'form': form})
+def organization_dashboard(request):
+    # Ensure the user is linked to an organization
+    if not hasattr(request.user, 'organization'):
+        return redirect('home')
+    return render(request, 'main/organization_dashboard.html')
+
+
+def organization_login(request):
+    if request.method == 'POST':
+        form = OrganizationLoginForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                return redirect('organization_dashboard')  # Redirect to the organization's dashboard
+            else:
+                return render(request, 'registration/login_organization.html', {'form': form, 'error': 'Invalid credentials'})
+    else:
+        form = OrganizationLoginForm()
+    return render(request, 'registration/login_organization.html', {'form': form})
+
+
+class CreateEventView(CreateView):
+    model = VolunteerOpportunity
+    form_class = CreateEventForm
+    template_name = 'main/create_event.html'
+    success_url = reverse_lazy('organization_dashboard')  # Redirect to the organization dashboard after success
+
+    def form_valid(self, form):
+        form.instance.organization = self.request.user.organization
+        return super().form_valid(form)
+
+class EditEventView(UpdateView):
+    model = VolunteerOpportunity
+    fields = ['title', 'description', 'date', 'location', 'additional_info', 'image']
+    template_name = 'main/edit_event.html'
+    success_url = reverse_lazy('organization_dashboard')
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.fields['date'].widget = forms.DateTimeInput(attrs={'type': 'datetime-local'}, format='%Y-%m-%dT%H:%M')
+        form.fields['date'].input_formats = ('%Y-%m-%dT%H:%M',)
+        return form
+
+class DeleteEventView(DeleteView):
+    model = VolunteerOpportunity
+    template_name = 'main/delete_event.html'
+    success_url = reverse_lazy('organization_dashboard')
+
+    def delete(self, request, *args, **kwargs):
+        messages.success(request, "The event has been deleted.")
+        return super().delete(request, *args, **kwargs)
+
+@login_required
+def event_participants(request, event_id):
+    event = get_object_or_404(VolunteerOpportunity, pk=event_id)
+    # Check if the logged-in user is associated with the organization
+    if request.user.organization != event.organization:
+        return redirect('some_error_page')  # or handle it by showing a message
+
+    participants = event.participants.all()
+    return render(request, 'main/event_participants.html', {'event': event, 'participants': participants})

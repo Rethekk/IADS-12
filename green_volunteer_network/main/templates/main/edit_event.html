@@ -1,0 +1,38 @@
+{% extends 'main/base.html' %}
+{% load widget_tweaks %} <!-- Load the widget_tweaks library -->
+
+{% block title %}Edit Event{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Edit Event</h2>
+        <a href="{% url 'organization_dashboard' %}" class="btn btn-outline-secondary">Back to Dashboard</a>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <form method="post" enctype="multipart/form-data" class="p-4 border rounded shadow-sm bg-light">
+                {% csrf_token %}
+
+                {% for field in form %}
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {% render_field field class+="form-control" %} <!-- Use render_field to add classes -->
+                    {% if field.help_text %}
+                    <small class="form-text text-muted">{{ field.help_text }}</small>
+                    {% endif %}
+                    {% if field.errors %}
+                    <div class="text-danger">
+                        {% for error in field.errors %}
+                        <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+
+                <button type="submit" class="btn btn-success btn-block">Update Event</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -3,74 +3,76 @@
 
 {% block content %}
 <!-- Hero Section -->
-<div class="jumbotron jumbotron-fluid text-center bg-cover text-white" style="background-image: url('{% static 'images/hero.jpg' %}');">
+<div class="jumbotron jumbotron-fluid" style="background-color: #D4E6A5; margin-bottom: 0; padding: 2rem 0;">
     <div class="container">
-        <h1 class="display-4">Be a part of volunteering opportunities in your community</h1>
-        <p class="lead">Join now and make a difference</p>
-        <a class="btn btn-primary btn-lg" href="{% url 'register' %}" role="button">Join Now</a>
+        <div class="row align-items-center">
+            <div class="col-md-8 text-left">
+                <h1 class="display-4" style="color: #295939; font-weight: bold;">Green Volunteering Hub - Canada</h1>
+                <p class="lead" style="color: #295939;">Make a difference by joining today.</p>
+            </div>
+            <div class="col-md-4 text-right">
+                {% if not user.is_authenticated %}
+                <a class="btn btn-primary btn-lg" href="{% url 'register' %}" role="button">Join Now</a>
+                {% endif %}
+            </div>
+        </div>
     </div>
 </div>
 
-<!-- Quote Section -->
-<section class="text-center my-5">
-    <blockquote class="blockquote">
-        <p class="mb-0">"The best way to find yourself is to lose yourself in the service of others."</p>
-        <footer class="blockquote-footer">Mahatma Gandhi</footer>
-    </blockquote>
-</section>
+<div class="container mt-5 mb-4 text-center">
+    <h1 class="display-6">Find Volunteering Opportunities</h1>
+    <form method="get" action="{% url 'home' %}" class="form-inline justify-content-center">
+        <input type="text" name="q" class="form-control mr-2" placeholder="Search by title" value="{{ request.GET.q }}">
+        <select name="province" class="form-control mr-2">
+            <option value="">Choose a province</option>
+            {% for code, name in PROVINCE_CHOICES %}
+            <option value="{{ code }}" {% if request.GET.province == code %}selected{% endif %}>{{ name }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+</div>
 
-<!-- Volunteer Opportunities Section -->
 <section class="container my-5">
     <h2 class="mb-4">Volunteer Opportunities</h2>
     <div class="row">
         {% for opportunity in opportunities %}
-            <div class="col-md-4">
-                <div class="card mb-4 shadow-sm">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ opportunity.title }}</h5>
-                        <p class="card-text">{{ opportunity.description }}</p>
-                        <p class="card-text"><small class="text-muted">{{ opportunity.organization.name }}</small></p>
-                        <p class="card-text"><small class="text-muted">{{ opportunity.location }}</small></p>
-                        <p class="card-text"><small class="text-muted">{{ opportunity.date }}</small></p>
-                        <a href="{% url 'opportunity_detail' opportunity.pk %}" class="btn btn-primary">Learn More</a>
-                    </div>
+        <div class="col-md-4">
+            <div class="card mb-4 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">{{ opportunity.title }}</h5>
+                    <p class="card-text">{{ opportunity.description }}</p>
+                    <p class="card-text"><small class="text-muted">{{ opportunity.organization.name }}</small></p>
+                    <p class="card-text"><small class="text-muted">{{ opportunity.location }}</small></p>
+                    <p class="card-text"><small class="text-muted">{{ opportunity.date }}</small></p>
+                    <a href="{% url 'opportunity_detail' opportunity.pk %}" class="btn btn-primary">Learn More</a>
                 </div>
             </div>
+        </div>
+        {% empty %}
+        <p>No opportunities found.</p>
         {% endfor %}
     </div>
 </section>
 
-<!-- Trending Topics Section -->
-<section class="bg-light py-5">
-    <div class="container">
-        <h2 class="text-center mb-4">Trending Topics</h2>
-        <div class="row">
-            {% for topic in topics %}
-                <div class="col-md-3">
-                    <div class="card mb-4">
-                        <div class="card-body text-center">
-                            <h5 class="card-title">{{ topic.name }}</h5>
-                            <a href="{% url 'topic_detail' topic.pk %}" class="btn btn-primary">Explore</a>
-                        </div>
-                    </div>
+<section class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card text-center shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Visit Statistics</h5>
+                    <p class="card-text">Total Visits: {{ total_visits }}</p>
                 </div>
-            {% endfor %}
+            </div>
         </div>
     </div>
 </section>
 
-<!-- Quotes by People Section -->
-<section class="container my-5">
-    <h2 class="text-center mb-4">Quotes by Community Members</h2>
-    <div class="row">
-        {% for quote in quotes %}
-            <div class="col-md-4">
-                <blockquote class="blockquote">
-                    <p class="mb-0">{{ quote.text }}</p>
-                    <footer class="blockquote-footer">{{ quote.author }}</footer>
-                </blockquote>
-            </div>
-        {% endfor %}
+
+<section class="bg-light py-5">
+    <div class="container text-center">
+        <h2>Get Involved in Your Community</h2>
+        <p>Explore more ways to help others around you.</p>
     </div>
 </section>
 {% endblock %}

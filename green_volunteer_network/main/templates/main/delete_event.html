@@ -1,0 +1,13 @@
+{% extends 'main/base.html' %}
+{% block title %}Delete Event{% endblock %}
+{% block content %}
+<div class="container">
+    <h1>Delete Event</h1>
+    <p>Are you sure you want to delete "{{ object.title }}"?</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Delete</button>
+        <a href="{% url 'organization_dashboard' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

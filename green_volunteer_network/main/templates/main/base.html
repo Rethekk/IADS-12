@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Green Volunteer Network{% endblock %}</title>
+    <title>{% block title %}Green Volunteering Hub{% endblock %}</title>
     {% load static %}
 
     <!-- Bootstrap CSS -->
@@ -11,13 +11,14 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-    <!-- Custom CSS (if needed) -->
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body>
     <header class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container">
-            <a class="navbar-brand" href="{% url 'home' %}">Green Volunteer Network</a>
+            <a class="navbar-brand" href="{% url 'home' %}">
+                <img src="{% get_media_prefix %}AppLogoText.png" alt="Logo" style="height: 60px;">
+            </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -27,8 +28,13 @@
                     <li class="nav-item"><a class="nav-link" href="{% url 'about_us' %}">About Us</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'contact_us' %}">Contact</a></li>
                     {% if user.is_authenticated %}
-                        <li class="nav-item"><a class="nav-link" href="{% url 'profile' %}">Profile</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Logout</a></li>
+                        {% if user.profile.is_organization %}
+                            <li class="nav-item"><a class="nav-link" href="{% url 'organization_dashboard' %}">Dashboard</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Logout</a></li>
+                        {% else %}
+                            <li class="nav-item"><a class="nav-link" href="{% url 'profile' %}">Profile</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Logout</a></li>
+                        {% endif %}
                     {% else %}
                         <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Login</a></li>
                         <li class="nav-item"><a class="nav-link" href="{% url 'register' %}">Register</a></li>
@@ -38,7 +44,7 @@
         </div>
     </header>
 
-    <main role="main" class="container mt-4">
+    <main role="main" class="container mt-4 main-content">
         {% for message in messages %}
         <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
             {{ message }}
@@ -83,8 +89,8 @@
             </div>
             <div class="row">
                 <div class="col-md-12 text-center">
-                    <p><b>Green Volunteer Network</b> connects volunteers with environmental initiatives and organizations</p>
-                    <p>Copyright © 2024 Green Volunteer Network. All rights reserved.</p>
+                    <p><b>GGreen Volunteering Hub</b> connects volunteers with environmental initiatives and organizations</p>
+                    <p>Copyright © 2024 Green Volunteering Hub. All rights reserved.</p>
                 </div>
             </div>
         </div>
