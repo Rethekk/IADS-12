@@ -11,6 +11,12 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.urls import reverse
 from .forms import ProfileUpdateForm,ContactForm, UserUpdateForm
 from .models import Profile
+from django.shortcuts import render, redirect
+from .forms import OrganizationRegistrationForm
+from .models import Organization
+from .forms import StaffMemberForm
+
+
 
 def home(request):
     query = request.GET.get('q', '')
@@ -157,3 +163,26 @@ def contact_us(request):
     else:
         form = ContactForm()
     return render(request, 'main/contact_us.html', {'form': form})
+
+def register_organization(request):
+    if request.method == 'POST':
+        form = OrganizationRegistrationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('add_staff_member')
+    else:
+        form = OrganizationRegistrationForm()
+    return render(request, 'main/register_organization.html', {'form': form})
+
+def add_staff_member(request):
+    if request.method == 'POST':
+        form = StaffMemberForm(request.POST)
+        if form.is_valid():
+            staff_member = form.save(commit=False)
+            # Assuming the organization is tied to the currently logged-in user
+            staff_member.organization = request.user.organization
+            staff_member.save()
+            return redirect('add_staff_member')
+    else:
+        form = StaffMemberForm()
+    return render(request, 'main/add_staff_member.html', {'form': form})

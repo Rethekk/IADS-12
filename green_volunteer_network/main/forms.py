@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from .models import Profile, Contact
 from django.contrib.auth.forms import AuthenticationForm
+from .models import Organization
+from .models import StaffMember
 
 class CustomLoginForm(AuthenticationForm):
     username = forms.CharField(
@@ -36,6 +38,11 @@ class ProfileUpdateForm(forms.ModelForm):
         model = Profile
         fields = ['profile_photo']
 
+class OrganizationRegistrationForm(forms.ModelForm):
+    class Meta:
+        model = Organization
+        fields = ['name', 'description', 'website', 'contact_email']
+
 class ContactForm(forms.ModelForm):
     class Meta:
         model = Contact
@@ -46,3 +53,22 @@ class ContactForm(forms.ModelForm):
             'subject': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Subject'}),
             'message': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Your Message', 'rows': 5}),
         }
+
+class StaffMemberForm(forms.ModelForm):
+    class Meta:
+        model = StaffMember
+        fields = ['name', 'email', 'password', 'confirm_password']
+        widgets = {
+            'password': forms.PasswordInput(),
+            'confirm_password': forms.PasswordInput(),
+        }
+
+    def clean(self):
+        cleaned_data = super().clean()
+        password = cleaned_data.get("password")
+        confirm_password = cleaned_data.get("confirm_password")
+
+        if password != confirm_password:
+            raise forms.ValidationError("Passwords do not match")
+
+        return cleaned_data
