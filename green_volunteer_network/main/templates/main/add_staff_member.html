@@ -1,0 +1,18 @@
+{% extends 'main/base.html' %}
+{% block title %}
+Add Staff Member - Green Volunteer Network
+{% endblock %}
+{% block content %}
+<div class="container">
+    <h2 class="mb-4 text-center">Add Staff Member</h2>
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <form method="post" action="{% url 'add_staff_member' %}" class="p-4 border rounded shadow-sm bg-light" autocomplete="off">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-primary btn-block">Add Staff Member</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
