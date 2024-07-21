@@ -15,6 +15,7 @@ from .forms import CreateEventForm
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django import forms
 import datetime
+from django.db import IntegrityError
 
 def home(request):
 
@@ -194,15 +195,23 @@ def register_organization(request):
     if request.method == 'POST':
         form = OrganizationRegistrationForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            # Assuming you want to log in the user right after registration
-            login(request, user)
-            messages.success(request, 'Registration successful. Welcome to Green Volunteer Network!')
-            return redirect('organization_dashboard')  # Redirect to a dashboard or another appropriate page
+            try:
+                user = form.save()
+                # Assuming you want to log in the user right after registration
+                login(request, user)
+                messages.success(request, 'Registration successful. Welcome to Green Volunteer Network!')
+                return redirect('organization_dashboard')  # Redirect to a dashboard or another appropriate page
+            except IntegrityError as e:
+                if 'unique constraint' in str(e).lower():
+                    messages.error(request, 'An organization with this user already exists.')
+                else:
+                    messages.error(request, 'An error occurred during registration. Please try again.')
         else:
             for field, errors in form.errors.items():
                 for error in errors:
                     messages.error(request, f"{field}: {error}")
+        # If form is not valid or an exception occurs, render the form again
+        return render(request, 'registration/register_organization.html', {'form': form})
     else:
         form = OrganizationRegistrationForm()
         return render(request, 'registration/register_organization.html', {'form': form})
