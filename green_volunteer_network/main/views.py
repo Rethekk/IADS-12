@@ -128,13 +128,12 @@ def user_login(request):
                     return redirect(reverse('home'))
                 else:
                     return HttpResponse('Your account is disabled.')
-            else:
-                return HttpResponse('Invalid login details.')
         else:
+            # Handle the form errors here
             return render(request, 'registration/login.html', {'form': form})
     else:
         form = AuthenticationForm()
-        return render(request, 'registration/login.html', {'form': form})
+    return render(request, 'registration/login.html', {'form': form})
 @login_required
 def user_logout(request):
     logout(request)
