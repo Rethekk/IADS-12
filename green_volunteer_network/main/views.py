@@ -143,9 +143,11 @@ def user_logout(request):
 
 def opportunity_detail(request, pk):
     opportunity = get_object_or_404(VolunteerOpportunity, pk=pk)
-    already_participating = request.user in opportunity.participants.all()
+    already_participating = request.user in opportunity.participants.all() if request.user.is_authenticated else False
+    is_organization_user = hasattr(request.user, 'profile') and request.user.profile.is_organization
+    is_event_creator = is_organization_user and request.user.organization == opportunity.organization
 
-    if request.method == "POST" and request.user.is_authenticated:
+    if request.method == "POST" and request.user.is_authenticated and not is_organization_user:
         if not already_participating:
             opportunity.participants.add(request.user)
             # Instead of redirect, we use JsonResponse to notify the client-side
@@ -155,9 +157,10 @@ def opportunity_detail(request, pk):
 
     return render(request, 'main/opportunity_detail.html', {
         'opportunity': opportunity,
-        'already_participating': already_participating
+        'already_participating': already_participating,
+        'is_organization_user': is_organization_user,
+        'is_event_creator': is_event_creator,
     })
-
 def participate(request, pk):
     opportunity = get_object_or_404(VolunteerOpportunity, pk=pk)
     if request.user not in opportunity.participants.all():

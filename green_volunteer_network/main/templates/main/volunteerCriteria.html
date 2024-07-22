@@ -5,8 +5,7 @@
 {% endblock %}
 
 {% block content %}
-
-<div class="container">
+<div class="container text-center">
     <h1>Volunteer Engagement Criteria</h1>
 
     <p>Our volunteer engagement criteria ensure that volunteers and organizations derive maximum benefit from their collaboration in environmental conservation and sustainability projects.</p>
@@ -16,7 +15,7 @@
 
     <h2>2. Skills and Expertise</h2>
     <p>We seek volunteers with skills relevant to environmental projects, such as:</p>
-    <ul>
+    <ul class="list-inline">
         <li>Gardening and landscaping</li>
         <li>Event planning and coordination</li>
         <li>Research and data analysis</li>
@@ -35,34 +34,43 @@
     <p>Ensure safety during volunteer activities and maintain respectful behavior towards fellow volunteers and community members.</p>
 
     <!-- Include images for attractiveness -->
-    <div class="row mt-5">
-        <div class="image-container">
-            <img class="mySlides" src="{% get_media_prefix %}volunteerGuidelines/guideline1.jpeg" alt="Image 1">
-            <img class="mySlides" src="{% get_media_prefix %}volunteerGuidelines/guideline2.jpeg" alt="Image 2">
-            <img  class="mySlides" src="{% get_media_prefix %}volunteerGuidelines/guideline3.jpeg" alt="Image 3">
-
+    <div class="row mt-5 justify-content-center">
+        <div class="image-container col-md-8">
+            <img class="mySlides" src="{% get_media_prefix %}volunteerGuidelines/Volunteer (1).jpg" alt="Image 1">
+            <img class="mySlides" src="{% get_media_prefix %}volunteerGuidelines/Volunteer (2).jpg" alt="Image 2">
+            <img class="mySlides" src="{% get_media_prefix %}volunteerGuidelines/Volunteer (3).jpg" alt="Image 3">
         </div>
     </div>
-
-
 </div>
+
 <script>
 var myIndex = 0;
 carousel();
 
 function carousel() {
-  var i;
-  var x = document.getElementsByClassName("mySlides");
-  for (i = 0; i < x.length; i++) {
-    x[i].style.display = "none";
-  }
-  myIndex++;
-  if (myIndex > x.length) {myIndex = 1}
-  x[myIndex-1].style.display = "block";
-  setTimeout(carousel, 2000); // Change image every 2 seconds
+    var i;
+    var x = document.getElementsByClassName("mySlides");
+    for (i = 0; i < x.length; i++) {
+        x[i].style.display = "none";
+    }
+    myIndex++;
+    if (myIndex > x.length) {myIndex = 1}
+    x[myIndex-1].style.display = "block";
+    setTimeout(carousel, 2000); // Change image every 2 seconds
 }
 </script>
 <style>
-.mySlides {display:none;}
+.mySlides {
+    display: none;
+    width: 100%; /* Ensure the images fit within the container */
+    height: auto;
+}
+.text-center {
+    text-align: center;
+}
+.list-inline {
+    display: inline-block;
+    text-align: left;
+}
 </style>
 {% endblock %}

@@ -13,12 +13,12 @@
             <p class="lead">{{ opportunity.organization.name }}</p>
         </div>
         {% if user.is_authenticated %}
-            {% if user.profile.is_organization and user.organization == opportunity.organization %}
+            {% if is_event_creator %}
                 <div>
                     <a href="{% url 'edit_event' opportunity.pk %}" class="btn btn-primary btn-lg">Edit</a>
                     <a href="{% url 'delete_event' opportunity.pk %}" class="btn btn-danger btn-lg">Delete</a>
                 </div>
-            {% else %}
+            {% elif not is_organization_user %}
                 <form action="{% url 'participate' opportunity.pk %}" method="post">
                     {% csrf_token %}
                     {% if already_participating %}
