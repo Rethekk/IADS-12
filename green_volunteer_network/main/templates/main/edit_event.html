@@ -1,5 +1,5 @@
 {% extends 'main/base.html' %}
-{% load widget_tweaks %} <!-- Load the widget_tweaks library -->
+{% load widget_tweaks %}
 
 {% block title %}Edit Event{% endblock %}
 {% block content %}
@@ -16,7 +16,7 @@
                 {% for field in form %}
                 <div class="form-group">
                     <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                    {% render_field field class+="form-control" %} <!-- Use render_field to add classes -->
+                    {% render_field field class+="form-control" %}
                     {% if field.help_text %}
                     <small class="form-text text-muted">{{ field.help_text }}</small>
                     {% endif %}

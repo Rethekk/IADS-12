@@ -1,9 +1,70 @@
 {% extends 'main/base.html' %}
+{% load static %}
+
 {% block title %}Organization Dashboard{% endblock %}
 {% block content %}
 <div class="container">
     <h1>Welcome, {{ request.user.organization.name }}</h1>
     <p>Here you can manage your organization's profile and events.</p>
+
+    <div class="row border-section mb-5">
+        <div class="col-md-4 text-center"> <!-- Added text-center class to center the image -->
+            {% if user_profile.profile_photo %}
+                <img src="{{ user_profile.profile_photo.url }}" alt="Profile Photo" class="rounded-circle" style="width: 200px; height: 200px;">
+            {% else %}
+                <img src="{% get_media_prefix %}defaultAvatar.png" alt="Default Avatar" class="rounded-circle" style="width: 200px; height: 200px;">
+            {% endif %}
+        </div>
+
+        <div class="col-md-8">
+            <h2>Organization Details</h2>
+            <form method="post" enctype="multipart/form-data" class="p-4 border rounded shadow-sm bg-light">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="{{ u_form.username.id_for_label }}" class="form-label">Username</label>
+                    <input type="text" id="{{ u_form.username.id_for_label }}" name="{{ u_form.username.name }}" value="{{ u_form.username.value }}" class="form-control">
+                    {% if u_form.username.errors %}
+                        <div class="text-danger">
+                            {% for error in u_form.username.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ u_form.email.id_for_label }}" class="form-label">Email</label>
+                    <input type="email" id="{{ u_form.email.id_for_label }}" name="{{ u_form.email.name }}" value="{{ u_form.email.value }}" class="form-control">
+                    {% if u_form.email.errors %}
+                        <div class="text-danger">
+                            {% for error in u_form.email.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ p_form.profile_photo.id_for_label }}" class="form-label">Profile Photo</label>
+                    <input type="file" id="{{ p_form.profile_photo.id_for_label }}" name="{{ p_form.profile_photo.name }}" class="form-control">
+                    {% if p_form.profile_photo.errors %}
+                        <div class="text-danger">
+                            {% for error in p_form.profile_photo.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="organization_name" class="form-label">Organization Name</label>
+                    <input type="text" id="organization_name" name="organization_name" value="{{ request.user.organization.name }}" class="form-control">
+                </div>
+
+                <button type="submit" class="btn btn-primary">Update Profile</button>
+            </form>
+        </div>
+    </div>
 
     <div class="my-4">
         <h2>Manage Events</h2>
@@ -35,6 +96,32 @@
         </table>
         {% else %}
         <p class="text-muted mt-3">No events found. Start by creating a new event.</p>
+        {% endif %}
+    </div>
+
+    <div class="my-4">
+        <h2>Donations Received</h2>
+        {% if received_donations %}
+        <table class="table mt-3">
+            <thead>
+                <tr>
+                    <th scope="col">Donor Name</th>
+                    <th scope="col">Amount</th>
+                    <th scope="col">Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for donation in received_donations %}
+                <tr>
+                    <td>{{ donation.donor_name }}</td>
+                    <td>${{ donation.amount }}</td>
+                    <td>{{ donation.donated_on|date:"Y-m-d" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p class="text-muted mt-3">No donations received yet.</p>
         {% endif %}
     </div>
 </div>

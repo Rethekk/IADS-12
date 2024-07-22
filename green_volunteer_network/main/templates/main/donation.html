@@ -1,0 +1,29 @@
+{% extends 'main/base.html' %}
+{% load widget_tweaks %} <!-- Add this line to use widget_tweaks -->
+
+{% block title %}Donate to {{ organization.name }}{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <h2>Donate to {{ organization.name }}</h2>
+    <form method="post" class="p-4 border rounded shadow-sm bg-light">
+        {% csrf_token %}
+        {% for field in form %}
+        <div class="form-group">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {% render_field field class+="form-control" %}
+            {% if field.help_text %}
+            <small class="form-text text-muted">{{ field.help_text }}</small>
+            {% endif %}
+            {% if field.errors %}
+            <div class="text-danger">
+                {% for error in field.errors %}
+                <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-success btn-block">Donate</button>
+    </form>
+</div>
+{% endblock %}

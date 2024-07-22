@@ -25,8 +25,9 @@ urlpatterns = [
     path('dashboard/organization/edit-event/<int:pk>/', views.EditEventView.as_view(), name='edit_event'),
     path('dashboard/organization/delete-event/<int:pk>/', views.DeleteEventView.as_view(), name='delete_event'),
     path('events/<int:event_id>/participants/', views.event_participants, name='event_participants'),
-
     path('login/organization/', views.organization_login, name='login_organization'),
+    path('organization/<int:pk>/', views.organization_detail, name='organization_detail'),
+    path('organization/<int:pk>/donation/', views.donate_to_organization, name='donation'),
 
     # password rest
     path('accounts/password_reset/', auth_views.PasswordResetView.as_view(), name='password_reset'),

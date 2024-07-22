@@ -5,18 +5,15 @@
 <div class="container">
     <h1>Profile</h1>
 
-    <!-- Profile section with photo and details -->
     <div class="row border-section">
-        <!-- Profile photo section -->
-        <div class="col-md-4">
+        <div class="col-md-4 text-center"> <!-- Center the image -->
             {% if user_profile.profile_photo %}
                 <img src="{{ user_profile.profile_photo.url }}" alt="Profile Photo" class="rounded-circle" style="width: 200px; height: 200px;">
             {% else %}
-                <img src="{% get_media_prefix %}defaultAvatar.png" alt="Default Avatar" class="rounded-circle" style="width: 200px; height: 200px;">
+                <img src="{% static 'defaultAvatar.png' %}" alt="Default Avatar" class="rounded-circle" style="width: 200px; height: 200px;">
             {% endif %}
         </div>
 
-        <!-- User details section -->
         <div class="col-md-8">
             <h2><u>User Details</u></h2>
             <form method="post" enctype="multipart/form-data">
@@ -62,7 +59,6 @@
         </div>
     </div>
 
-    <!-- Volunteer Opportunities section -->
     <div class="row mt-5">
         <div class="col-md-12">
             <h2>Your Volunteer Opportunities</h2>
@@ -87,6 +83,29 @@
                 </div>
             {% else %}
                 <p>No volunteer opportunities found.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-md-12">
+            <h2>Your Donations</h2>
+            {% if user_donations %}
+                <div class="row">
+                    {% for donation in user_donations %}
+                    <div class="col-md-4">
+                        <div class="card mb-4 shadow-sm">
+                            <div class="card-body">
+                                <p class="card-text"><strong>Donation To:</strong> {{ donation.organization.name }}</p>
+                                <p class="card-text"><strong>Amount:</strong> ${{ donation.amount }}</p>
+                                <p class="card-text"><small class="text-muted">Donated on {{ donation.donated_on }}</small></p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>No donations found.</p>
             {% endif %}
         </div>
     </div>

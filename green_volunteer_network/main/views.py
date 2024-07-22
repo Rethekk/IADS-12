@@ -5,8 +5,8 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_protect
-from .models import VolunteerOpportunity, Organization
-from .forms import UserRegisterForm, OrganizationRegistrationForm, OrganizationLoginForm
+from .models import VolunteerOpportunity, Organization, Donation
+from .forms import UserRegisterForm, OrganizationRegistrationForm, OrganizationLoginForm, DonationForm
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.urls import reverse, reverse_lazy
 from .forms import ProfileUpdateForm,ContactForm, UserUpdateForm
@@ -14,20 +14,46 @@ from .models import Profile
 from .forms import CreateEventForm
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django import forms
-import datetime
-from django.db import IntegrityError
+import datetime, os, tempfile
+
+
+temp_dir = tempfile.gettempdir()
+visit_file_path = os.path.join(temp_dir, 'visit_count.txt')
+
+def increment_visits():
+    if os.path.exists(visit_file_path):
+        with open(visit_file_path, 'r') as file:
+            total_visits = int(file.read())
+    else:
+        total_visits = 0
+
+    total_visits += 1
+
+    with open(visit_file_path, 'w') as file:
+        file.write(str(total_visits))
+
+    return total_visits
 
 def home(request):
+    if not request.session.session_key:
+        request.session.create()
 
-    #Session Counting
-    today = datetime.date.today()
-    if 'has_visited' not in request.session:
-        total_visits = request.session.get('total_visits', 0) + 1
-        request.session['total_visits'] = total_visits
-        request.session['has_visited'] = True
-        request.session.set_expiry(0)
+    visits_today = request.session.get('visits_today', 0)
 
-    #Search
+    last_visit_date = request.session.get('last_visit', None)
+    if not last_visit_date or last_visit_date != str(datetime.date.today()):
+        visits_today += 1
+        request.session['visits_today'] = visits_today
+        request.session['last_visit'] = str(datetime.date.today())
+        total_visits = increment_visits()
+    else:
+        visits_today = request.session.get('visits_today', 1)
+        if os.path.exists(visit_file_path):
+            with open(visit_file_path, 'r') as file:
+                total_visits = int(file.read())
+        else:
+            total_visits = 0
+
     query = request.GET.get('q', '')
     province = request.GET.get('province', '')
     opportunities = VolunteerOpportunity.objects.all()
@@ -36,12 +62,11 @@ def home(request):
     if province:
         opportunities = opportunities.filter(province=province)
 
-    total_visits = request.session.get('total_visits', 0)
-
     return render(request, 'main/home.html', {
         'opportunities': opportunities,
         'PROVINCE_CHOICES': VolunteerOpportunity.PROVINCE_CHOICES,
-        'total_visits': total_visits
+        'total_visits': total_visits,
+        'visits_today': visits_today
     })
 
 def search_suggestions(request):
@@ -70,32 +95,31 @@ def register(request):
 
 @login_required
 def profile(request):
-    user_profile, created = Profile.objects.get_or_create(user=request.user)
+    if request.user.profile.is_organization:
+        return redirect('organization_dashboard')
 
     if request.method == 'POST':
         u_form = UserUpdateForm(request.POST, instance=request.user)
-        p_form = ProfileUpdateForm(request.POST, request.FILES, instance=user_profile)
-
+        p_form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile)
         if u_form.is_valid() and p_form.is_valid():
             u_form.save()
             p_form.save()
-            messages.success(request, 'Your profile has been updated successfully.')
-            return redirect('profile')  # Redirect to the same view after successful update
+            messages.success(request, 'Your profile has been updated!')
+            return redirect('profile')
     else:
         u_form = UserUpdateForm(instance=request.user)
-        p_form = ProfileUpdateForm(instance=user_profile)
+        p_form = ProfileUpdateForm(instance=request.user.profile)
 
     participated_opportunities = request.user.participated_opportunities.all()
+    user_donations = Donation.objects.filter(user=request.user)
 
-    context = {
+    return render(request, 'main/profile.html', {
         'u_form': u_form,
         'p_form': p_form,
         'participated_opportunities': participated_opportunities,
-        'user_profile': user_profile,
-    }
-
-    return render(request, 'main/profile.html', context)
-
+        'user_donations': user_donations,
+        'user_profile': request.user.profile
+    })
 # def user_login(request):
 #     if request.method == 'POST':
 #         username = request.POST['username']
@@ -129,15 +153,48 @@ def user_login(request):
                 else:
                     return HttpResponse('Your account is disabled.')
         else:
-            # Handle the form errors here
             return render(request, 'registration/login.html', {'form': form})
     else:
         form = AuthenticationForm()
     return render(request, 'registration/login.html', {'form': form})
+
 @login_required
 def user_logout(request):
     logout(request)
     return HttpResponseRedirect(reverse('home'))
+
+def organization_detail(request, pk):
+    organization = get_object_or_404(Organization, pk=pk)
+    opportunities = VolunteerOpportunity.objects.filter(organization=organization)
+    donations = Donation.objects.filter(organization=organization)
+
+    return render(request, 'main/organization_detail.html', {
+        'organization': organization,
+        'opportunities': opportunities,
+        'donations': donations,
+    })
+
+@login_required
+def donate_to_organization(request, pk):
+    organization = get_object_or_404(Organization, pk=pk)
+
+    if request.method == 'POST':
+        form = DonationForm(request.POST)
+        if form.is_valid():
+            donation = form.save(commit=False)
+            donation.organization = organization
+            if request.user.is_authenticated:
+                donation.user = request.user
+            else:
+                messages.error(request, "You must be logged in to donate.")
+                return redirect('login')
+            donation.save()
+            messages.success(request, "Thank you for your donation!")
+            return redirect('organization_detail', pk=organization.pk)
+    else:
+        form = DonationForm()
+
+    return render(request, 'main/donation.html', {'form': form, 'organization': organization})
 
 
 def opportunity_detail(request, pk):
@@ -160,6 +217,7 @@ def opportunity_detail(request, pk):
         'is_organization_user': is_organization_user,
         'is_event_creator': is_event_creator,
     })
+
 def participate(request, pk):
     opportunity = get_object_or_404(VolunteerOpportunity, pk=pk)
     if request.user not in opportunity.participants.all():
@@ -214,7 +272,7 @@ def register_organization(request):
             profile.is_organization = True
             profile.save()
             login(request, user)
-            messages.success(request, 'Registration successful. Welcome to Green Volunteer Network!')
+            messages.success(request, 'Registration successful. Wait for admin approval...')
             logout(request)
             return HttpResponseRedirect(reverse('home'))
             # return redirect('organization_dashboard')
@@ -229,11 +287,35 @@ def register_organization(request):
 
 @login_required
 def organization_dashboard(request):
-    if not request.user.profile.is_organization:
-        messages.error(request, 'You are not authorized to access this page.')
+    if not hasattr(request.user, 'organization'):
         return redirect('home')
-    return render(request, 'main/organization_dashboard.html')
 
+    if request.method == 'POST':
+        u_form = UserUpdateForm(request.POST, instance=request.user)
+        p_form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile)
+        if u_form.is_valid() and p_form.is_valid():
+            u_form.save()
+            p_form.save()
+
+            # Update organization details
+            organization = request.user.organization
+            organization.name = request.POST.get('organization_name')
+            organization.save()
+
+            messages.success(request, 'Your profile has been updated!')
+            return redirect('organization_dashboard')
+    else:
+        u_form = UserUpdateForm(instance=request.user)
+        p_form = ProfileUpdateForm(instance=request.user.profile)
+
+    received_donations = Donation.objects.filter(organization=request.user.organization)
+
+    return render(request, 'main/organization_dashboard.html', {
+        'u_form': u_form,
+        'p_form': p_form,
+        'received_donations': received_donations,
+        'user_profile': request.user.profile,
+    })
 
 def organization_login(request):
     if request.method == 'POST':
@@ -244,7 +326,7 @@ def organization_login(request):
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect('organization_dashboard')  # Redirect to the organization's dashboard
+                return redirect('organization_dashboard')
             else:
                 return render(request, 'registration/login_organization.html', {'form': form, 'error': 'Invalid credentials'})
     else:
@@ -286,9 +368,8 @@ class DeleteEventView(DeleteView):
 @login_required
 def event_participants(request, event_id):
     event = get_object_or_404(VolunteerOpportunity, pk=event_id)
-    # Check if the logged-in user is associated with the organization
     if request.user.organization != event.organization:
-        return redirect('some_error_page')  # or handle it by showing a message
+        return redirect('some_error_page')
 
     participants = event.participants.all()
     return render(request, 'main/event_participants.html', {'event': event, 'participants': participants})

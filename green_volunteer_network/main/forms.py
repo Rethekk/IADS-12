@@ -4,6 +4,7 @@ from django.contrib.auth.forms import UserCreationForm
 from .models import Profile, Contact, Organization, VolunteerOpportunity
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import get_user_model
+from .models import Donation
 
 User = get_user_model()
 
@@ -82,9 +83,8 @@ class OrganizationLoginForm(AuthenticationForm):
     password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Password'}))
 
     def confirm_login_allowed(self, user):
-        # You can add custom logic here to verify if the user is an organization
         super().confirm_login_allowed(user)
-        if not user.is_organization:  # Assuming 'is_organization' is a user attribute to differentiate users
+        if not user.is_organization:
             raise forms.ValidationError("Login not allowed. Please make sure you are logging in as an organization.", code='invalid_login')
 
 
@@ -100,3 +100,9 @@ class CreateEventForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(CreateEventForm, self).__init__(*args, **kwargs)
         self.fields['date'].input_formats = ('%Y-%m-%dT%H:%M',)
+
+
+class DonationForm(forms.ModelForm):
+    class Meta:
+        model = Donation
+        fields = ['donor_name', 'amount']

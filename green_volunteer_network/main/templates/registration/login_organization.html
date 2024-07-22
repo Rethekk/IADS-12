@@ -8,7 +8,6 @@
             <form method="post" class="p-4 border rounded shadow-sm bg-light">
                 {% csrf_token %}
 
-                <!-- Optional alert for login errors -->
                 {% if form.errors %}
                 <div class="alert alert-danger">
                     Invalid username or password.
