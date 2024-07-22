@@ -1,4 +1,6 @@
 {% extends 'main/base.html' %}
+{% load widget_tweaks %}
+
 {% block title %}
 Register as an Organization - Green Volunteering Hub
 {% endblock %}
@@ -9,7 +11,6 @@ Register as an Organization - Green Volunteering Hub
         <div class="col-md-6">
             <form method="post" class="p-4 border rounded shadow-sm bg-light" autocomplete="off">
                 {% csrf_token %}
-
                 {% if messages %}
                 <div class="form-group">
                     {% for message in messages %}
@@ -26,7 +27,7 @@ Register as an Organization - Green Volunteering Hub
                 {% for field in form %}
                 <div class="form-group">
                     <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
-                    {{ field }}
+                    {% render_field field class+="form-control" %}
                     {% if field.help_text %}
                     <small class="form-text text-muted">{{ field.help_text }}</small>
                     {% endif %}

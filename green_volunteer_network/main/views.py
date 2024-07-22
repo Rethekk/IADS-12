@@ -5,7 +5,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_protect
-from .models import VolunteerOpportunity
+from .models import VolunteerOpportunity, Organization
 from .forms import UserRegisterForm, OrganizationRegistrationForm, OrganizationLoginForm
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.urls import reverse, reverse_lazy
@@ -191,33 +191,44 @@ def contact_us(request):
     return render(request, 'main/contact_us.html', {'form': form})
 
 
+
+
 def register_organization(request):
     if request.method == 'POST':
         form = OrganizationRegistrationForm(request.POST)
         if form.is_valid():
-            try:
-                user = form.save()
-                # Assuming you want to log in the user right after registration
-                login(request, user)
-                messages.success(request, 'Registration successful. Welcome to Green Volunteer Network!')
-                return redirect('organization_dashboard')  # Redirect to a dashboard or another appropriate page
-            except IntegrityError as e:
-                if 'unique constraint' in str(e).lower():
-                    messages.error(request, 'An organization with this user already exists.')
-                else:
-                    messages.error(request, 'An error occurred during registration. Please try again.')
+            user = form.save(commit=False)
+            user.save()
+            # Create organization
+            organization = Organization(
+                user=user,
+                name=form.cleaned_data['name'],
+                description=form.cleaned_data['description'],
+                website=form.cleaned_data['website'],
+                contact_email=form.cleaned_data['contact_email']
+            )
+            organization.save()
+            profile, created = Profile.objects.get_or_create(user=user)
+            profile.is_organization = True
+            profile.save()
+            login(request, user)
+            messages.success(request, 'Registration successful. Welcome to Green Volunteer Network!')
+            logout(request)
+            return HttpResponseRedirect(reverse('home'))
+            # return redirect('organization_dashboard')
         else:
             for field, errors in form.errors.items():
                 for error in errors:
                     messages.error(request, f"{field}: {error}")
-        # If form is not valid or an exception occurs, render the form again
-        return render(request, 'registration/register_organization.html', {'form': form})
     else:
         form = OrganizationRegistrationForm()
-        return render(request, 'registration/register_organization.html', {'form': form})
+    return render(request, 'registration/register_organization.html', {'form': form})
+
+
+@login_required
 def organization_dashboard(request):
-    # Ensure the user is linked to an organization
-    if not hasattr(request.user, 'organization'):
+    if not request.user.profile.is_organization:
+        messages.error(request, 'You are not authorized to access this page.')
         return redirect('home')
     return render(request, 'main/organization_dashboard.html')
 
@@ -251,7 +262,7 @@ class CreateEventView(CreateView):
 
 class EditEventView(UpdateView):
     model = VolunteerOpportunity
-    fields = ['title', 'description', 'date', 'location', 'additional_info', 'image']
+    fields = ['title', 'description', 'date', 'location', 'province', 'additional_info', 'image']
     template_name = 'main/edit_event.html'
     success_url = reverse_lazy('organization_dashboard')
 

@@ -18,19 +18,19 @@ class Organization(models.Model):
         return self.name
 
 
-class StaffMember(models.Model):
-    organization = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name='staff_members')
-    name = models.CharField(max_length=255)
-    email = models.EmailField(unique=True)
-    password = models.CharField(max_length=128)
-    confirm_password = models.CharField(max_length=128)
-
-    def clean(self):
-        if self.password != self.confirm_password:
-            raise ValidationError("Passwords do not match")
-
-    def __str__(self):
-        return self.name
+# class StaffMember(models.Model):
+#     organization = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name='staff_members')
+#     name = models.CharField(max_length=255)
+#     email = models.EmailField(unique=True)
+#     password = models.CharField(max_length=128)
+#     confirm_password = models.CharField(max_length=128)
+#
+#     def clean(self):
+#         if self.password != self.confirm_password:
+#             raise ValidationError("Passwords do not match")
+#
+#     def __str__(self):
+#         return self.name
 
 class VolunteerOpportunity(models.Model):
     PROVINCE_CHOICES = (
@@ -113,16 +113,16 @@ class Quote(models.Model):
         return self.author
 
 
-class StaffMember(models.Model):
-    organization = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name='staff_members')
-    name = models.CharField(max_length=255)
-    email = models.EmailField(unique=True)
-    password = models.CharField(max_length=128)
-    confirm_password = models.CharField(max_length=128)
-
-    def clean(self):
-        if self.password != self.confirm_password:
-            raise ValidationError("Passwords do not match")
-
-    def __str__(self):
-        return self.name
+# class StaffMember(models.Model):
+#     organization = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name='staff_members')
+#     name = models.CharField(max_length=255)
+#     email = models.EmailField(unique=True)
+#     password = models.CharField(max_length=128)
+#     confirm_password = models.CharField(max_length=128)
+#
+#     def clean(self):
+#         if self.password != self.confirm_password:
+#             raise ValidationError("Passwords do not match")
+#
+#     def __str__(self):
+#         return self.name
